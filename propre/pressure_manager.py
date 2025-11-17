@@ -103,8 +103,8 @@ class LivePressureVisualizer:
         while True:
             elapsed = time.time() - start_time
             # Sinusoïde en opposition de phase
-            force_L = (math.sin(elapsed * 3) + 1) / 2 * 400 + 50
-            force_R = (math.sin(elapsed * 3 + math.pi) + 1) / 2 * 400 + 50
+            force_L = (math.sin(elapsed * 3) + 1) / 2 * 400 
+            force_R = (math.sin(elapsed * 3 + math.pi) + 1) / 2 * 400 
             pressures_L = [0, 0, 0, 0, 0, 0, force_L/10, force_L/10, force_L/10, force_L/10, force_L/10, force_L/10, force_L/10, force_L/10, force_L/10, force_L/10]
             pressures_R = [0, 0, 0, 0, 0, 0, force_R/10, force_R/10, force_R/10, force_R/10, force_R/10, force_R/10, force_R/10, force_R/10, force_R/10, force_R/10]
             

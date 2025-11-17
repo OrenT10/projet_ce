@@ -101,23 +101,28 @@ class PressureRing:
             cv2.ellipse(target_image, center, axes, 0, 0, 360, (50,50,50), 1)
 
 class FootTracker:
-    """Gère l'état d'un pied (position MediaPipe + données pression)."""
+    """Gère l'état d'un pied (position MediaPipe + données pression UDP)."""
     
     def __init__(self, is_right, drawer):
         self.is_right = is_right
         self.drawer = drawer
+        # Indices MediaPipe
         self.knee_idx = 26 if is_right else 25
         self.ankle_idx = 28 if is_right else 27
         self.heel_idx = 30 if is_right else 29
         self.toe_idx = 32 if is_right else 31
         
         self.visible = False
-        self.coords = {} # knee, ankle, center, heel, toe
-        self.pressure_data = (0.2, {}) # radius, colors
+        self.coords = {} 
+        
+        # (Radius, Colors). Données venant de l'UDP via update_pressure
+        self.pressure_data = (0.2, {}) 
+        
+        # Mémoire de la position Y du sol (pour la perspective)
+        self.floor_y = None 
 
     def update_landmarks(self, landmarks, w, h):
         try:
-            # ... (récupération des landmarks inchangée) ...
             lk, la = landmarks[self.knee_idx], landmarks[self.ankle_idx]
             lh, lt = landmarks[self.heel_idx], landmarks[self.toe_idx]
             
@@ -132,34 +137,53 @@ class FootTracker:
             self.coords['heel'] = heel
             self.coords['toe'] = toe
 
-            # --- LOGIQUE "POINT DE CONTACT" ---
-            # X : On reste sous la cheville (axe de rotation tibia)
+            # --- LOGIQUE DE FUSION (VISION + UDP) ---
+            
+            # 1. Où est le bas du pied visuellement ?
+            current_foot_bottom = max(heel[1], toe[1])
+            
+            # 2. Est-ce que les capteurs UDP détectent une pression ?
+            # self.pressure_data[1] contient le dictionnaire des couleurs/zones actives
+            has_pressure = bool(self.pressure_data[1])
+
+            # Initialisation de la mémoire sol si c'est la première frame
+            if self.floor_y is None:
+                self.floor_y = current_foot_bottom
+            
+            # 3. Mise à jour de la mémoire du sol
+            # Si les capteurs disent "contact" (has_pressure), alors la position actuelle
+            # EST la position du sol (cela gère automatiquement la perspective).
+            if has_pressure:
+                self.floor_y = current_foot_bottom
+            
+            # Si has_pressure est False (pied levé), on NE touche PAS à self.floor_y.
+            # L'anneau restera donc verrouillé à la dernière position connue du sol.
+
+            # --- CALCUL DU CENTRE DE L'ANNEAU ---
+            # X : Suit la cheville (l'axe du pied)
             center_x = ankle[0]
             
-            # Y : On prend le MAX (car Y descend) entre talon et orteil.
-            # C'est le point qui touche "le sol".
-            ground_contact_y = max(heel[1], toe[1])
-            
-            # Petit offset esthétique pour ne pas couper le bas du pied
-            center_y = ground_contact_y + 10 
+            # Y : Utilise la mémoire du sol (+ petit offset esthétique)
+            # Que le pied soit levé ou posé, l'anneau reste au niveau du sol virtuel
+            center_y = self.floor_y + 10
             
             self.coords['center'] = (center_x, center_y)
             self.visible = True
-        except:
+            
+        except Exception as e:
             self.visible = False
 
     def update_pressure(self, radius, colors):
+        """Reçoit les données UDP traitées depuis le script principal."""
         self.pressure_data = (radius, colors)
-
         
     def render(self, target, bg):
+        # On dessine SEULEMENT si on a des données UDP (Pression > 0)
+        # Si le pied est levé (colors vide), l'anneau disparaît naturellement.
         if self.visible and self.pressure_data[1]:
-            # Vérifiez bien que vous avez ajouté self.coords['heel'] et ['toe'] 
-            # dans update_landmarks comme vu précédemment
-            
             self.drawer.draw(
                 target, bg, 
-                self.coords['center'], 
+                self.coords['center'], # Position ancrée au sol
                 self.coords['heel'],
                 self.coords['toe'], 
                 self.pressure_data[0], self.pressure_data[1], 
