@@ -1,3 +1,5 @@
+"""MAX_FORCE_N est à calibrer à chaque utilisateur !!! ligne 32 ge"""
+
 import socket
 import re
 import threading
@@ -27,7 +29,7 @@ class LivePressureVisualizer:
     SENSORS_HIND_INT = [1, 3, 5]
 
     # --- Configuration Données ---
-    MAX_FORCE_N = 500.0
+    MAX_FORCE_N = 200.0 # !!!! à calibrer à chaque prise !!!!
     BASE_RADIUS = 0.2
     MAX_RADIUS = 1.0
     CMAP_NAME = 'YlOrBr'

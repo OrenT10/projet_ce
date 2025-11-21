@@ -7,7 +7,7 @@ class PressureRing:
     """Gère le dessin géométrique de l'anneau 3D transparent."""
     
     BASE_RADIUS_PX = 5
-    MAX_RADIUS_PX = 100
+    MAX_RADIUS_PX = 5000
     RING_HOLE_RATIO = 0.7
     PERSPECTIVE_RATIO = 0.3
 
