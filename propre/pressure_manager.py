@@ -29,17 +29,16 @@ class LivePressureVisualizer:
     SENSORS_HIND_INT = [1, 3, 5]
 
     # --- Configuration Données ---
-    MAX_FORCE_N = 200.0 # !!!! à calibrer à chaque prise !!!!
     BASE_RADIUS = 0.2
     MAX_RADIUS = 1.0
     CMAP_NAME = 'YlOrBr'
 
-    def __init__(self, simulation_mode=False):
+    def __init__(self, simulation_mode=False, max_force=350.0):
         self.simulation_mode = simulation_mode
         self.data_queue = queue.Queue(maxsize=self.QUEUE_MAX)
         self.t0 = None
         self.listener_thread = None
-        
+        self.MAX_FORCE_N = max_force
         self.last_data_packet = None
         self.radius_L = self.BASE_RADIUS
         self.radius_R = self.BASE_RADIUS
@@ -105,8 +104,8 @@ class LivePressureVisualizer:
         while True:
             elapsed = time.time() - start_time
             # Sinusoïde en opposition de phase
-            force_L = (math.sin(elapsed * 3) + 1) / 2 * 400 + 50
-            force_R = (math.sin(elapsed * 3 + math.pi) + 1) / 2 * 400 + 50
+            force_L = (math.sin(elapsed * 3) + 1) / 2 * 250 + 50
+            force_R = (math.sin(elapsed * 3 + math.pi) + 1) / 2 * 250 + 50
             pressures_L = [0, 0, 0, 0, 0, 0, force_L/10, force_L/10, force_L/10, force_L/10, force_L/10, force_L/10, force_L/10, force_L/10, force_L/10, force_L/10]
             pressures_R = [0, 0, 0, 0, 0, 0, force_R/10, force_R/10, force_R/10, force_R/10, force_R/10, force_R/10, force_R/10, force_R/10, force_R/10, force_R/10]
             

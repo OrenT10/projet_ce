@@ -9,7 +9,8 @@ import mediapipe as mp
 import os
 import time
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, simpledialog
+import socket
 
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
@@ -49,10 +50,51 @@ def ask_user_mode():
     # Si l'utilisateur veut le LIVE (True), alors SIMULATION_MODE doit être False
     return not want_live_mode
 
+def ask_user_mass():
+    """
+    Demande la masse de l'utilisateur pour calibrer MAX_FORCE_N.
+    Retourne la masse (float) ou une valeur par défaut.
+    """
+    root = tk.Tk()
+    root.withdraw()
+    root.attributes('-topmost', True)
+    
+    # Demande la masse
+    mass = simpledialog.askfloat(
+        "Calibration Utilisateur", 
+        "Entrez la masse de l'utilisateur (kg) :",
+        minvalue=10.0, 
+        maxvalue=200.0
+    )
+    
+    root.destroy()
+    
+    if mass is None:
+        print("Annulation ou erreur: masse par défaut 70kg utilisée.")
+        return 70.0
+    return mass
+
+
 def main():
     # 1. Choix du mode
     print("⏳ En attente du choix utilisateur...")
     SIMULATION_MODE = ask_user_mode()
+    
+    # 2. Calibration de la Force
+    user_mass = ask_user_mass()
+
+    # Calcul dynamique de MAX_FORCE_N
+    calculated_max_force = (user_mass*9.81 / 2.0) * 0.7
+    
+    print(f"--- CALIBRATION ---")
+    print(f"Masse utilisateur : {user_mass} kg")
+    print(f"MAX_FORCE_N calculé : {calculated_max_force:.2f}")
+    
+    # Instanciation avec le paramètre dynamique
+    pressure_vis = LivePressureVisualizer(
+        simulation_mode=SIMULATION_MODE, 
+        max_force=calculated_max_force
+    )
     
     mode_str = "SIMULATION" if SIMULATION_MODE else "LIVE UDP"
     print(f"🔹 Mode sélectionné : {mode_str}")
