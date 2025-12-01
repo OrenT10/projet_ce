@@ -25,12 +25,15 @@ Pour assurer le bon fonctionnement du logiciel, la configuration suivante est re
 
 **Matériel :**
 * Ordinateur sous Windows 10/11.
-* Webcam fonctionnelle connectée par USB.
+* Webcam.
 * Semelles connectées configurées sur le même réseau local.
 
 **Logiciel :**
 * Python 3.9 ou version supérieure.
 * Bibliothèques tierces : OpenCV, MediaPipe, NumPy, Matplotlib.
+* Modèle IA pour la visualisation : 
+  Le modèle utilisé pour la détection des pieds et la pose des marqueurs indiquant les pressions est  "pose_landmarker_full.task", il est de performance moyenne. Cependant un autre modèle plus puissant ou plus léger de mediapipe peut aussi être utilisé au détriment de la qualité de détection des pieds par le programme ou des performances du progamme en temps réel. 
+Voir https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_full/float16/latest/pose_landmarker_full.task
 
 ## 4. Installation
 
@@ -42,22 +45,35 @@ Suivez ces étapes pour installer l'environnement sur une nouvelle machine :
     pip install opencv-python mediapipe numpy matplotlib
     ```
 3.  **Vérification des fichiers :** Assurez-vous que le répertoire contient impérativement les éléments suivants :
-    * `main.py` (Exécutable principal) [cite: 1]
+    * `main.py` (Exécutable principal)
     * `pressure_manager.py` (Gestionnaire de flux UDP) 
-    * `visual_engine.py` (Moteur de rendu graphique) [cite: 3]
-    * `pose_landmarker_full.task` (Modèle IA de détection) [cite: 2]
+    * `visual_engine.py` (Moteur de rendu graphique)
+    * `pose_landmarker_full.task` (Modèle IA de détection)
 
-## 5. Configuration Réseau (Mode Live)
-
+## 5. Mode Live
+  
 Le logiciel agit comme un serveur d'écoute UDP. Une configuration réseau stricte est nécessaire pour la communication avec les semelles.
+  ### Configuration Réseau
+1.  **Adresse IP :** L'ordinateur exécutant le logiciel doit être connecté sur le même réseau que le logiciel OpenGo et disposer d'une IP fixe à configurer dans le code main.py, 
+2. **Port d'écoute :** Le pare-feu Windows doit autoriser le trafic entrant sur le port UDP **5005** (port UDP configurable sur le logiciel OpenGO).
 
-1.  **Adresse IP :** L'ordinateur exécutant le logiciel doit disposer d'une IP fixe correspondant à la configuration des semelles.
-    * [cite_start]IP Cible recommandée : `192.168.1.26` (Voir commentaire dans `main.py`) 
-2.  [cite_start]**Port d'écoute :** Le pare-feu Windows doit autoriser le trafic entrant sur le port UDP **5005**[cite: 4].
-
+ ### Architectures réseau complete  
+ 
 ## 6. Guide d'Utilisation
 
 ### Lancement
 Exécutez le script principal via l'invite de commande ou un IDE :
 ```bash
 python main.py
+
+
+
+## 7. Scripts supplémentaires
+
+Le dépot git contient des scripts supplémentaires qui peuvent être utiles dans la réalisation de tests et pour ameliorer votre comprehension du fonctionnement de notre programme. 
+ ### Le script File_to_Visu.py
+  Il est à utiliser avec les fichiers text exportables du logiciel OpenGo après un enregistrement via les capteurs. Il faudra vous assurer que le nom du fichier est le même que celui configuré dans le script. 
+### Le script "LivePressure_Visualizer.py" :
+il permet de faire la visualisation en temps réel uniquement il faudra pour cela respecter la structure évoquée au point 5. (Mode Live) 
+
+### Le script trackingScript2.py est un script de visualisation en temps réel mais avec une visualisation différente. 
