@@ -66,7 +66,7 @@ Exécutez le script principal via l'invite de commande ou un IDE :
 ```bash
 python main.py
 
-
+```
 
 ## 7. Scripts supplémentaires
 
