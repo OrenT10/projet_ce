@@ -31,9 +31,11 @@ Pour assurer le bon fonctionnement du logiciel, la configuration suivante est re
 **Logiciel :**
 * Python 3.9 ou version supérieure.
 * Bibliothèques tierces : OpenCV, MediaPipe, NumPy, Matplotlib.
-* Modèle IA pour la visualisation : 
-  Le modèle utilisé pour la détection des pieds et la pose des marqueurs indiquant les pressions est  "pose_landmarker_full.task", il est de performance moyenne. Cependant un autre modèle plus puissant ou plus léger de mediapipe peut aussi être utilisé au détriment de la qualité de détection des pieds par le programme ou des performances du progamme en temps réel. 
-Voir https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_full/float16/latest/pose_landmarker_full.task
+* Modèle IA de MediaPipe².
+ 
+²:Le modèle utilisé pour la détection des pieds et la pose des marqueurs indiquant les pressions est  **"pose_landmarker_full.task"**, il est de performance moyenne.
+Cependant un autre modèle plus puissant ou plus léger de mediapipe peut aussi être utilisé au détriment de la qualité de détection des pieds par le programme ou des performances du progamme en temps réel. 
+Voir [Modèles Mediapipe](https://ai.google.dev/edge/mediapipe/solutions/vision/pose_landmarker?hl=fr#models).
 
 ## 4. Installation
 
@@ -57,8 +59,9 @@ Le logiciel agit comme un serveur d'écoute UDP. Une configuration réseau stric
 1.  **Adresse IP :** L'ordinateur exécutant le logiciel doit être connecté sur le même réseau que le logiciel OpenGo et disposer d'une IP fixe à configurer dans le code main.py, 
 2. **Port d'écoute :** Le pare-feu Windows doit autoriser le trafic entrant sur le port UDP **5005** (port UDP configurable sur le logiciel OpenGO).
 
- ### Architectures réseau complete  
- 
+ ### Architecture système complet
+<img width="1342" height="742" alt="Archi_Whushu_26 2drawio" src="https://github.com/user-attachments/assets/40a5ed80-57dc-48fd-a9b9-795023043da1" />
+
 ## 6. Guide d'Utilisation
 
 ### Lancement
@@ -66,7 +69,7 @@ Exécutez le script principal via l'invite de commande ou un IDE :
 ```bash
 python main.py
 
-
+```
 
 ## 7. Scripts supplémentaires
 
