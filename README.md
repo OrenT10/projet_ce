@@ -60,7 +60,7 @@ Le logiciel agit comme un serveur d'écoute UDP. Une configuration réseau stric
 2. **Port d'écoute :** Le pare-feu Windows doit autoriser le trafic entrant sur le port UDP **5005** (port UDP configurable sur le logiciel OpenGO).
 
  ### Architecture système complet
-<img width="1342" height="742" alt="Archi_Whushu_26 2drawio" src="https://github.com/user-attachments/assets/40a5ed80-57dc-48fd-a9b9-795023043da1" />
+<img width="1341" height="741" alt="Archi_sys_wushu26" src="https://github.com/user-attachments/assets/1f34cf77-10f4-4980-b768-dbacb4353918" />
 
 ## 6. Guide d'Utilisation
 
