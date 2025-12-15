@@ -42,8 +42,9 @@ def main():
     )
     detector = vision.PoseLandmarker.create_from_options(options)
     
-    cap = cv2.VideoCapture(0)
-    if not cap.isOpened(): cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(1)
+    if not cap.isOpened(): 
+        cap = cv2.VideoCapture(0)
     
     width = 1280
     height = 720
